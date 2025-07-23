@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>フードドライブ連携システム フロー図</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Helvetica Neue', 'Yu Gothic', 'Hiragino Sans', sans-serif;
+            background: #f8f9fa;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+        
+        .page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px 40px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 50px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid #e9ecef;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .page-number {
+            background: #2c3e50;
+            color: white;
+            padding: 8px 24px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9em;
+            display: inline-block;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-size: 2.4em;
+            font-weight: 300;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+        
+        .subtitle {
+            color: #6c757d;
+            font-size: 1.1em;
+            margin-top: 12px;
+            font-weight: 400;
+        }
+        
+        /* Page 1 Styles - Overall Flow */
+        .overall-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .phase {
+            width: 100%;
+            max-width: 900px;
+            padding: 40px;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            background: white;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .phase:hover {
+            border-color: #2c3e50;
+            box-shadow: 0 8px 30px rgba(44, 62, 80, 0.1);
+        }
+        
+        .phase-1::before {
+            background: #3498db;
+        }
+        
+        .phase-2::before {
+            background: #27ae60;
+        }
+        
+        .phase-3::before {
+            background: #e67e22;
+        }
+        
+        .phase-4::before {
+            background: #8e44ad;
+        }
+        
+        .phase::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .phase-title {
+            font-size: 1.6em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            text-align: left;
+        }
+        
+        .phase-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 30px;
+        }
+        
+        .phase-number {
+            background: #2c3e50;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .phase-description {
+            flex: 1;
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #495057;
+        }
+        
+        .phase-details {
+            margin-top: 15px;
+            font-size: 0.95em;
+            color: #6c757d;
+            padding-left: 20px;
+            border-left: 3px solid #e9ecef;
+        }
+        
+        .arrow-connector {
+            width: 2px;
+            height: 40px;
+            background: linear-gradient(to bottom, #2c3e50, #6c757d);
+            margin: 10px 0;
+            position: relative;
+        }
+        
+        .arrow-connector::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: -4px;
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 8px solid #6c757d;
+        }
+        
+        /* Page 2 Styles - Detailed Flows */
+        .flow-section {
+            margin-bottom: 60px;
+        }
+        
+        .section-title {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background: #2c3e50;
+        }
+        
+        .flow-steps {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .flow-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 25px;
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            background: white;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .flow-step:hover {
+            border-color: #2c3e50;
+            box-shadow: 0 4px 20px rgba(44, 62, 80, 0.08);
+        }
+        
+        .step-number {
+            background: #2c3e50;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .organization-flow .step-number {
+            background: #495057;
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .step-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .step-description {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.05em;
+        }
+        
+        .step-details {
+            font-size: 0.95em;
+            color: #6c757d;
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 6px;
+            border-left: 4px solid #e9ecef;
+            line-height: 1.6;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-weight: 500;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .system-connection {
+            text-align: center;
+            padding: 30px;
+            margin: 40px 0;
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            font-weight: 500;
+            color: #495057;
+            font-size: 1.1em;
+        }
+        
+        .navigation {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .nav-button {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 0.95em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(44, 62, 80, 0.2);
+        }
+        
+        .nav-button:hover {
+            background: #34495e;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(44, 62, 80, 0.3);
+        }
+        
+        .nav-button.inactive {
+            background: #6c757d;
+            opacity: 0.7;
+        }
+        
+        .page.hidden {
+            display: none;
+        }
+        
+        /* Professional Icons */
+        .icon {
+            width: 24px;
+            height: 24px;
+            display: inline-block;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .benefit-card {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .benefit-card:hover {
+            border-color: #2c3e50;
+            box-shadow: 0 4px 15px rgba(44, 62, 80, 0.1);
+        }
+        
+        .benefit-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .benefit-description {
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+            
+            .phase-content, .flow-step {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .phase-number, .step-number {
+                align-self: flex-start;
+            }
+            
+            .navigation {
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+        
+        @media print {
+            .navigation {
+                display: none;
+            }
+            
+            .page {
+                min-height: auto;
+                padding: 40px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="authOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(44,62,80,0.95);z-index:9999;display:flex;align-items:center;justify-content:center;color:white;flex-direction:column;">
+    <div style="background:white;padding:40px;border-radius:8px;text-align:center;box-shadow:0 0 30px rgba(0,0,0,0.5);color:#2c3e50;width:90%;max-width:400px;">
+        <h2 style="margin-bottom:20px;">🔐 パスワード認証</h2>
+        <input id="pagePassword" type="password" placeholder="パスワードを入力" style="width:100%;padding:12px;border-radius:6px;border:1px solid #ccc;font-size:16px;">
+        <button onclick="checkPassword()" style="margin-top:20px;width:100%;padding:12px;background:#2c3e50;color:white;border:none;border-radius:6px;font-size:16px;">ログイン</button>
+        <div id="passwordError" style="margin-top:10px;color:#e74c3c;font-size:14px;display:none;">パスワードが間違っています。</div>
+    </div>
+</div>
+<script>
+    const ACCESS_PASSWORD = "fambam";
+    function checkPassword() {
+        const input = document.getElementById("pagePassword").value;
+        if (input === ACCESS_PASSWORD) {
+            document.getElementById("authOverlay").style.display = "none";
+        } else {
+            document.getElementById("passwordError").style.display = "block";
+        }
+    }
+</script>
+
+    <!-- Page 1: Overall Flow -->
+    <div class="page" id="page1">
+        <div class="container">
+            <div class="page-header">
+                <div class="page-number">PAGE 01</div>
+                <h1>ファンクラブ連動フードドライブ</h1>
+                <div class="subtitle">System Overview</div>
+            </div>
+            
+            <div class="overall-flow">
+                <div class="phase phase-1">
+                    <div class="phase-title">PHASE 01 — 募集・告知</div>
+                    <div class="phase-content">
+                        <div class="phase-number">01</div>
+                        <div>
+                            <div class="phase-description">
+                                ファンクラブから会員向けにフードドライブ参加を募集。参加方法と特典内容を詳しく案内し、社会貢献への参加を呼びかけます。
+                            </div>
+                            <div class="phase-details">
+                                メール配信、公式サイト告知、SNS活用による包括的な告知活動
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="arrow-connector"></div>
+                
+                <div class="phase phase-2">
+                    <div class="phase-title">PHASE 02 — 食品送付</div>
+                    <div class="phase-content">
+                        <div class="phase-number">02</div>
+                        <div>
+                            <div class="phase-description">
+                                ファンクラブ会員がセカンドハーベストジャパンに食品を送付。伝票に会員番号と登録名を記載して参加の証明を行います。
+                            </div>
+                            <div class="phase-details">
+                                会員情報の正確な記載により、システム連携の基盤を構築
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="arrow-connector"></div>
+                
+                <div class="phase phase-3">
+                    <div class="phase-title">PHASE 03 — データ連携</div>
+                    <div class="phase-content">
+                        <div class="phase-number">03</div>
+                        <div>
+                            <div class="phase-description">
+                                セカンドハーベストが受取確認後、専用システムにデータ入力。専用連携システムでファンクラブと情報を共有します。
+                            </div>
+                            <div class="phase-details">
+                                暗号化通信とアクセス制御による安全なデータ管理
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="arrow-connector"></div>
+                
+                <div class="phase phase-4">
+                    <div class="phase-title">PHASE 04 — 特典配布・継続</div>
+                    <div class="phase-content">
+                        <div class="phase-number">04</div>
+                        <div>
+                            <div class="phase-description">
+                                ファンクラブが参加者にデジタル特典を配布。スタンプラリー機能などで継続的な参加を促進します。
+                            </div>
+                            <div class="phase-details">
+                                自動化されたシステムによる効率的な特典配布と長期的エンゲージメント構築
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-title">社会貢献意識の向上</div>
+                    <div class="benefit-description">会員の社会課題への関心を高め、ブランド価値を向上</div>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-title">エンゲージメント強化</div>
+                    <div class="benefit-description">継続的な参加により会員との結びつきを深化</div>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-title">コミュニティ形成</div>
+                    <div class="benefit-description">共通の価値観を持つ会員同士の絆を強化</div>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-title">データ活用</div>
+                    <div class="benefit-description">参加データを活用した戦略的なマーケティング展開</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Page 2: Detailed Flows -->
+    <div class="page hidden" id="page2">
+        <div class="container">
+            <div class="page-header">
+                <div class="page-number">PAGE 02</div>
+                <h1>詳細フロー</h1>
+                <div class="subtitle">Detailed Process Flow</div>
+            </div>
+            
+            <div class="flow-section fan-flow">
+                <div class="section-title">ファンクラブ会員の参加プロセス</div>
+                
+                <div class="flow-steps">
+                    <div class="flow-step">
+                        <div class="step-number">01</div>
+                        <div class="step-content">
+                            <div class="step-title">参加案内の受信・確認</div>
+                            <div class="step-description">ファンクラブからの公式案内を通じて企画詳細を確認</div>
+                            <div class="step-details">
+                                • メール配信による個別案内<br>
+                                • 公式サイトでの詳細情報確認<br>
+                                • 参加条件・特典内容の理解<br>
+                                • 送付先住所・方法の確認
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <div class="step-number">02</div>
+                        <div class="step-content">
+                            <div class="step-title">食品の準備・送付</div>
+                            <div class="step-description">適切な食品を選定し、指定の方法でセカンドハーベストジャパンに送付</div>
+                            <div class="highlight">
+                                <strong>必須記載事項</strong><br>
+                                送り主名：ファンクラブ登録名（フルネーム）<br>
+                                備考欄：会員番号（正確に記載）
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <div class="step-number">03</div>
+                        <div class="step-content">
+                            <div class="step-title">特典受領・活用</div>
+                            <div class="step-description">参加確認後、ファンクラブから配布される限定特典を受領</div>
+                            <div class="step-details">
+                                • 限定デジタルコンテンツの受信<br>
+                                • スタンプラリーポイントの獲得<br>
+                                • マイページでの参加履歴確認<br>
+                                • 今後の特別企画への優先案内
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="system-connection">
+                データ連携システム
+            </div>
+            
+            <div class="flow-section organization-flow">
+                <div class="section-title">運営組織の業務プロセス</div>
+                
+                <div class="flow-steps">
+                    <div class="flow-step">
+                        <div class="step-number">01</div>
+                        <div class="step-content">
+                            <div class="step-title">ファンクラブ：企画告知・募集</div>
+                            <div class="step-description">多チャネルを活用した包括的な参加募集活動</div>
+                            <div class="step-details">
+                                • CRMシステムを活用した会員セグメント配信<br>
+                                • 公式サイトでの特設ページ開設<br>
+                                • SNS・公式アカウントでの拡散<br>
+                                • 参加方法の詳細ガイド作成
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <div class="step-number">02</div>
+                        <div class="step-content">
+                            <div class="step-title">セカンドハーベスト：受取・品質確認</div>
+                            <div class="step-description">到着した食品の受取確認と品質チェック</div>
+                            <div class="step-details">
+                                • 食品の状態・賞味期限確認<br>
+                                • 配送伝票の会員情報照合<br>
+                                • 受取日時・内容の詳細記録<br>
+                                • 不備がある場合の対応プロセス
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <div class="step-number">03</div>
+                        <div class="step-content">
+                            <div class="step-title">セカンドハーベスト：システム登録</div>
+                            <div class="step-description">専用連携システムへの参加者データ入力</div>
+                            <div class="step-details">
+                                登録項目：<br>
+                                • 会員番号（バリデーション機能付き）<br>
+                                • 参加者名（苗字のみ、プライバシー配慮）<br>
+                                • 受取日時（自動タイムスタンプ）<br>
+                                • 処理ステータス管理
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <div class="step-number">04</div>
+                        <div class="step-content">
+                            <div class="step-title">ファンクラブ：データ処理・特典配布</div>
+                            <div class="step-description">システム連携による自動化された特典配布プロセス</div>
+                            <div class="step-details">
+                                • API連携による参加者データ自動取得<br>
+                                • 会員データベースとの照合処理<br>
+                                • デジタルコンテンツの一括配信<br>
+                                • スタンプラリーシステム更新<br>
+                                • 参加履歴の永続化
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <div class="step-number">05</div>
+                        <div class="step-content">
+                            <div class="step-title">ファンクラブ：分析・改善サイクル</div>
+                            <div class="step-description">データドリブンな効果測定と継続的改善</div>
+                            <div class="step-details">
+                                • 参加率・継続率の定量分析<br>
+                                • 会員満足度調査の実施<br>
+                                • A/Bテストによる施策最適化<br>
+                                • 次期企画への知見活用<br>
+                                • ROI測定とステークホルダー報告
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="navigation">
+        <button class="nav-button" onclick="showPage(1)" id="page1-btn">PAGE 01</button>
+        <button class="nav-button" onclick="showPage(2)" id="page2-btn">PAGE 02</button>
+    </div>
+    
+    <script>
+        function showPage(pageNum) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.add('hidden');
+            });
+            
+            // Show selected page
+            document.getElementById('page' + pageNum).classList.remove('hidden');
+            
+            // Update button states
+            document.querySelectorAll('.nav-button').forEach(btn => {
+                btn.classList.add('inactive');
+            });
+            document.getElementById('page' + pageNum + '-btn').classList.remove('inactive');
+        }
+        
+        // Initialize
+        showPage(1);
+        
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                if (!document.getElementById('page2').classList.contains('hidden')) return;
+                showPage(2);
+                e.preventDefault();
+            } else if (e.key === 'ArrowLeft') {
+                if (!document.getElementById('page1').classList.contains('hidden')) return;
+                showPage(1);
+                e.preventDefault();
+            }
+        });
+        
+        // Print optimization
+        window.addEventListener('beforeprint', function() {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('hidden');
+            });
+        });
+        
+        window.addEventListener('afterprint', function() {
+            showPage(1);
+        });
+    </script>
+</body>
+</html>
